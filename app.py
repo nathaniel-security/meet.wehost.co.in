@@ -1,19 +1,25 @@
 import os
+import sys
 from flask import Flask, redirect
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
+# Load environment variables from .env file if it exists
 load_dotenv()
 
 app = Flask(__name__)
 
 # Get Google Meet URL from environment variable
-# If it's empty or not set, use the placeholder
-MEET_URL = os.environ.get("MEET_URL") or "https://meet.google.com/lookup/default"
+MEET_URL = os.environ.get("MEET_URL")
 
-# Ensure the URL starts with http:// or https://
-if not MEET_URL.startswith(("http://", "https://")):
-    MEET_URL = f"https://{MEET_URL}"
+# If it's empty or not set, use a fallback and print a warning
+if not MEET_URL:
+    MEET_URL = "https://meet.google.com/lookup/default"
+    print("WARNING: MEET_URL environment variable is not set! Using fallback.", file=sys.stderr)
+else:
+    # Ensure the URL starts with http:// or https://
+    if not MEET_URL.startswith(("http://", "https://")):
+        MEET_URL = f"https://{MEET_URL}"
+    print(f"INFO: Redirecting to {MEET_URL}", file=sys.stdout)
 
 @app.route('/')
 def index():

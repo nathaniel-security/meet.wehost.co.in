@@ -1,6 +1,6 @@
 import os
 import sys
-from flask import Flask, redirect
+from flask import Flask
 from dotenv import load_dotenv
 
 # Load environment variables from .env file if it exists
@@ -21,10 +21,21 @@ else:
         MEET_URL = f"https://{MEET_URL}"
     print(f"INFO: Redirecting to {MEET_URL}", file=sys.stdout)
 
+_REDIRECT_HTML = """\
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="refresh" content="0;url={url}">
+<script>window.location.replace("{url}");</script>
+</head>
+<body></body>
+</html>
+"""
+
 @app.route('/')
 def index():
-    """Redirect to Google Meet."""
-    return redirect(MEET_URL, code=302)
+    html = _REDIRECT_HTML.format(url=MEET_URL)
+    return html, 200, {"Content-Type": "text/html"}
 
 @app.route('/health')
 def health():

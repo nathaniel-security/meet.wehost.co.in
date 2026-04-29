@@ -42,7 +42,7 @@ def index():
     html = _REDIRECT_HTML.format(url=MEET_URL)
     latency_ms = (time.monotonic() - t_start) * 1000
     print(
-        f"INFO: redirect source_ip={source_ip} cf_connecting_ip={cf_connecting_ip} x_forwarded_for={x_forwarded_for} latency_ms={latency_ms:.2f}",
+        f"INFO: redirect endpoint={request.method} {request.path} source_ip={source_ip} cf_connecting_ip={cf_connecting_ip} x_forwarded_for={x_forwarded_for} latency_ms={latency_ms:.2f}",
         file=sys.stdout,
         flush=True,
     )
@@ -58,7 +58,7 @@ def health():
     html = _REDIRECT_HTML.format(url=MEET_URL)
     latency_ms = (time.monotonic() - t_start) * 1000
     print(
-        f"INFO: redirect source_ip={source_ip} cf_connecting_ip={cf_connecting_ip} x_forwarded_for={x_forwarded_for} latency_ms={latency_ms:.2f}",
+        f"INFO: endpoint={request.method} {request.path} source_ip={source_ip} cf_connecting_ip={cf_connecting_ip} x_forwarded_for={x_forwarded_for} latency_ms={latency_ms:.2f}",
         file=sys.stdout,
         flush=True,
     )

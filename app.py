@@ -51,6 +51,17 @@ def index():
 @app.route('/health')
 def health():
     """Health check endpoint."""
+    t_start = time.monotonic()
+    source_ip = request.remote_addr
+    cf_connecting_ip = request.headers.get("CF-Connecting-IP", "-")
+    x_forwarded_for = request.headers.get("X-Forwarded-For", "-")
+    html = _REDIRECT_HTML.format(url=MEET_URL)
+    latency_ms = (time.monotonic() - t_start) * 1000
+    print(
+        f"INFO: redirect source_ip={source_ip} cf_connecting_ip={cf_connecting_ip} x_forwarded_for={x_forwarded_for} latency_ms={latency_ms:.2f}",
+        file=sys.stdout,
+        flush=True,
+    )
     return {"status": "healthy"}, 200
 
 if __name__ == "__main__":

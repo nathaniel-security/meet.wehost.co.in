@@ -1,6 +1,7 @@
 import os
 import sys
-from flask import Flask
+import time
+from flask import Flask, request
 from dotenv import load_dotenv
 
 # Load environment variables from .env file if it exists
@@ -34,7 +35,17 @@ _REDIRECT_HTML = """\
 
 @app.route('/')
 def index():
+    t_start = time.monotonic()
+    source_ip = request.remote_addr
+    cf_connecting_ip = request.headers.get("CF-Connecting-IP", "-")
+    x_forwarded_for = request.headers.get("X-Forwarded-For", "-")
     html = _REDIRECT_HTML.format(url=MEET_URL)
+    latency_ms = (time.monotonic() - t_start) * 1000
+    print(
+        f"INFO: redirect source_ip={source_ip} cf_connecting_ip={cf_connecting_ip} x_forwarded_for={x_forwarded_for} latency_ms={latency_ms:.2f}",
+        file=sys.stdout,
+        flush=True,
+    )
     return html, 200, {"Content-Type": "text/html"}
 
 @app.route('/health')
